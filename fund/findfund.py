@@ -10,6 +10,7 @@ try:
 except ImportError:
     from urllib2 import urlopen, Request
 
+# 下面分别为股票型，指数型和混合型基金的存档文件
 dfgpx = pd.read_csv("gpx.csv",header=None)  
 # print(len(dfgpx))
 dfzs = pd.read_csv("zs.csv",header=None)  
