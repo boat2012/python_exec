@@ -2,3 +2,6 @@ cats/*.exe
 cats/*.dll
 cats/*.png
 *.mp4
+*.png
+*cookies
+*.pyc
