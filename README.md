@@ -1,6 +1,7 @@
 # python练习程序
 
-
+### 2020年12月31日 
+- tingxie.py 听写的小程序
 
 - ximalaya.py 下载ximalaya上的音频文件
 
