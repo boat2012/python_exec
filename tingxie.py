@@ -15,7 +15,7 @@ import sys
 import pyttsx3
 
 def pre_init():
-    if not os.path.exists('C:\\Users\\boat1\\Documents\\小学学习\\wordlist.txt'):
+    if not os.path.exists('E:\\小学学习\\闽教版4年级上册单词表.txt'):
         raise IOError('File not found.')
     print("init...")
 
@@ -31,17 +31,29 @@ class TX(threading.Thread):   #听写
         self.engine = pyttsx3.init()
         self.engine.setProperty('rate', 50)
         self.engine.stop()
-        self.delay = 3
+
+        # voices = self.engine.getProperty('voices')
+        # self.engine.setProperty('voice', voices[1].id)
+        
+        self.delay = 5
+        self.times = 3
         
 
     def get_word(self):
         with open(self.__filename,'r') as x:
             line = x.readlines()
             for iu in self.__unit:
-                wordlist = line[iu-1].strip().split(',')
+#                wordlist = line[iu-1].strip().split(',')
+                wordlist = line[iu].strip().split(',')
                 for eachword in wordlist:
                     yield eachword
     
+    def check_contain_chinese(self,check_str):
+        for ch in check_str:
+            if u'\u4e00' <= ch <= u'\u9fff':
+                return True
+        return False
+
     def run(self):
         self.__running_flag.set()
         self.nextword = self.get_word()
@@ -50,8 +62,17 @@ class TX(threading.Thread):   #听写
             self.__pause_flag.wait()
             word = next(self.nextword)
             app.log(word)
-            self.engine.say(word)
-            self.engine.runAndWait()
+            voices = self.engine.getProperty('voices')
+            if self.check_contain_chinese(word) :
+                self.engine.setProperty('voice', voices[0].id)
+            else:
+                self.engine.setProperty('voice', voices[1].id)
+
+            for _ in range(0,self.times):
+                #print(eachword)
+                self.engine.say(word)
+                self.engine.runAndWait()
+                time.sleep(len(word)*0.1)
             time.sleep(self.delay)
         
 
@@ -70,6 +91,8 @@ class TX(threading.Thread):   #听写
         tempStr = "正在运行" if self.__running_flag.is_set() else "不在运行"
         tempStr += " | "
         tempStr += "没有暂停" if self.__pause_flag.is_set() else "暂停"
+
+        tempStr += "|" + "每词间隔：%d 秒| 每词重复%d 次" % (self.delay ,self.times)
         return tempStr
 
     def close(self):
@@ -85,7 +108,7 @@ class App():
         # Grid.rowconfigure(parent, 0, weight=1)   
 
         self.manually_tab = parent
-        self.filename = 'C:\\Users\\boat1\\Documents\\小学学习\\wordlist.txt'
+        self.filename = 'E:\\小学学习\\wordlist.txt'
 
         self.entry_f = StringVar(parent,self.filename)
         self.Entryf = ttk.Entry(parent,textvariable=self.entry_f)
@@ -144,7 +167,7 @@ class App():
 
         self.filename = fd.askopenfilename(
             title='Open a file',
-            initialdir='/',
+            initialdir='E:\\小学学习\\',
             filetypes=filetypes)
 
         showinfo(
@@ -162,7 +185,7 @@ class App():
         print(line)
         self.lb.delete(0,END)
         for i in range(len(line)):
-            self.lb.insert('end','unit '+str(i))
+            self.lb.insert('end','unit '+str(i+1))
 
 
     def start_click(self):
@@ -195,6 +218,6 @@ if __name__ == '__main__':
     root = Tk()
     global app
     app = App(parent=root)
-    root.geometry('800x480')
+    root.geometry('531x320')
     root.title(u'tx v1')
     root.mainloop()
