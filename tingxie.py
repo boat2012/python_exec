@@ -29,13 +29,13 @@ class TX(threading.Thread):   #听写
         self.__filename = filename
         self.__unit = units
         self.engine = pyttsx3.init()
-        self.engine.setProperty('rate', 50)
+        self.engine.setProperty('rate', 20)
         self.engine.stop()
 
         # voices = self.engine.getProperty('voices')
         # self.engine.setProperty('voice', voices[1].id)
         
-        self.delay = 5
+        self.delay = 6
         self.times = 3
         
 
@@ -72,7 +72,7 @@ class TX(threading.Thread):   #听写
                 #print(eachword)
                 self.engine.say(word)
                 self.engine.runAndWait()
-                time.sleep(len(word)*0.1)
+                time.sleep(len(word)*0.3)
             time.sleep(self.delay)
         
 
