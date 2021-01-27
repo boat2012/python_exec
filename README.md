@@ -1,5 +1,8 @@
 # python练习程序
 
+### 2021年1月27日
+- download_file.ipynb 下载文件，使用进度条和断点续传
+
 ### 2020年12月31日 
 - tingxie.py 听写的小程序
 
