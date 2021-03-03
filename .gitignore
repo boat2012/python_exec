@@ -3,3 +3,7 @@ cats/*.dll
 cats/*.png
 *.mp4
 echarts.ipynb
+*.png
+*cookies
+*.pyc
+
