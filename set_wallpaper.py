@@ -1,4 +1,4 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 from PIL import Image
 import win32gui
 import win32con
@@ -10,34 +10,36 @@ import time
 import sys
 import json
 import urllib.request
-from PIL import Image,ImageDraw,ImageFont
+from PIL import Image, ImageDraw, ImageFont
 
-#reload(sys)
-#sys.setdefaultencoding('utf8')
+# reload(sys)
+# sys.setdefaultencoding('utf8')
 
 icount = 0
 time = 10
-if time <= 0 :
+if time <= 0:
     time = 60
 
 urltemplate = 'http://cn.bing.com/HPImageArchive.aspx?format=js&idx=%d&n=1&nc=1361089515117&FORM=HYLH1'
 baImageUrlList = []
-localFileName  = ''
-localBMPFileName  = ''
+localFileName = ''
+localBMPFileName = ''
 imagedir = 'C:/Users/boat1/Pictures/Wallpapers/'
 bmpdir = 'C:/Users/boat1/Pictures/Wallpapers/'
-bmplist = []    
+bmplist = []
+
 
 def main():
-    #print("main:",icount)
+    # print("main:",icount)
     parserImageUrl()
     download_images()
     # image_convert_bmp()
-    #set_wall_func()    
+    # set_wall_func()
+
 
 def parserImageUrl():
 
-    for i in range(0, 9, 1):
+    for i in range(0, 9, 1):  # 猎取9天内的图片
         url = urltemplate % i
         # print(url)
         #content = urllib.urlopen(url).read()
@@ -46,7 +48,8 @@ def parserImageUrl():
         imageurl = decodedjson['images'][0]['url']
         imagedate = decodedjson["images"][0]['enddate']
         imagecopyright = decodedjson["images"][0]['copyright']
-        baImageUrlList.append([imageurl,imagedate,imagecopyright])
+        baImageUrlList.append([imageurl, imagedate, imagecopyright])
+
 
 def download_images():
 
@@ -57,11 +60,16 @@ def download_images():
         conn = urllib.request.urlopen("http://cn.bing.com"+url[0])
         f.write(conn.read())
         f.close()
-        ttfont = ImageFont.truetype("C:/Users/boat1/Pictures/Wallpapers/msyh.ttc",20)  #这里我之前使用Arial.ttf时不能打出中文，用华文细黑就可以
+        # 这里我之前使用Arial.ttf时不能打出中文，用华文细黑就可以
+        ttfont = ImageFont.truetype(
+            "C:/Users/boat1/Pictures/Wallpapers/msyh.ttc", 20)
         im = Image.open(imagename)
         draw = ImageDraw.Draw(im)
-        draw.text((10,10),url[2], fill=(255,255,255),font=ttfont)
-        im.save(imagename,'jpeg')
+        draw.text((10, 10), url[2]+"-"+url[1],
+                  fill=(255, 255, 255), font=ttfont)
+        im.save(imagename, 'jpeg')
+        print(imagename, " saved.")
+
 
 def image_convert_bmp():
     imaglist = os.listdir(imagedir)
@@ -70,12 +78,13 @@ def image_convert_bmp():
         file_name_type = os.path.splitext(file_name)
         file_name = file_name_type[0]
         newpath = bmpdir + file_name + '.bmp'
-        imagepath  = './images/' + imagepath
+        imagepath = './images/' + imagepath
 
         bmplist.append(newpath)
         bmpImage = Image.open(imagepath)
         bmpImage.save(newpath, "BMP")
-        
+
+
 '''
 def setWallpaper(imagepath):
     k = win32api.RegOpenKeyEx(win32con.HKEY_CURRENT_USER,"Control Panel\\Desktop",0,win32con.KEY_SET_VALUE)
@@ -104,4 +113,3 @@ def setWallpaper(imagepath):
 
 if __name__ == '__main__':
     main()
- 
